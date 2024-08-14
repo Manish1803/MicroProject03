@@ -1,46 +1,74 @@
-const button = document.querySelectorAll("button");
 const input = document.querySelector("input");
-const cal = document.querySelector(".cal");
+const resetBtn = document.querySelector(".resetBtn");
+const delBtn = document.querySelector(".delBtn");
+const calBtn = document.querySelector(".calBtn");
+
+const btns = document.querySelectorAll(".btn");
 
 let string = "";
 
-button.forEach((value) => {
-  value.addEventListener("click", (e) => {
-    if (e.target.innerText == "DEL") {
-      string = input.value.slice(0, input.value.length - 1);
-      input.value = string;
-      // input.value = input.value.slice(0, input.value.length - 1);
-    } else if (e.target.innerText == "RESET") {
+btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    string += e.target.innerText;
+
+    // check if first value is operator
+    const firstchar = string.charAt(0);
+    if (firstchar == "+" || firstchar == "*" || firstchar == "/") {
+      alert("Please enter a number first before using an operator.");
       string = "";
-      input.value = string;
-      // input.value = input.value.slice(0, input.value.length - 1);
-    } else if (e.target.innerText == "=") {
-      document.querySelector(".screen").style.backgroundColor = "#000000";
-      let cond = string[string.length - 1];
-      if (cond == "+" || cond == "-" || cond == `-` || cond == `*`) {
-        string = input.value.slice(0, input.value.length - 1);
-      }
-      string = eval(string);
-      input.value = string;
-    } else {
-      document.querySelector(".screen").style.backgroundColor = "#181f32";
-      if (e.target.textContent == "x") {
-        string += "*";
-      } else {
-        string += e.target.textContent;
-      }
-      input.value = string;
     }
+
+    // update value to input screen
+    input.value = string;
   });
 });
 
-// button.addEventListener("click", function (ent) {
-//   console.log(ent.target.textContent);
+delBtn.addEventListener("click", () => {
+  const screenValue = input.value;
+  string = screenValue.slice(0, screenValue.length - 1);
 
-//   input.textContent += ent.target.textContent;
-// });
+  // updating value to input screen
+  input.value = string;
+});
 
-// cal.addEventListener("click", function () {
-//   const number = Number(input.textContent);
-//   console.log(number);
-// });
+resetBtn.addEventListener("click", () => {
+  string = "";
+
+  // updating value to input screen
+  input.value = string;
+});
+
+// Changing expression
+function changeExpression(str) {
+  return str.replace(/\x/g, "*");
+}
+
+// Checking last number
+function checkingNum(str) {
+  let lastChar = str[str.length - 1];
+  if (
+    lastChar === "+" ||
+    lastChar === "x" ||
+    lastChar === "/" ||
+    lastChar === "-"
+  ) {
+    alert("Please don't end the input with an operator.");
+    string = str.slice(0, str.length - 1); // Remove the last operator
+    input.value = string; // Update input value
+  }
+}
+
+calBtn.addEventListener("click", () => {
+  // Check if the last character is an operator
+  checkingNum(string);
+  string = changeExpression(string);
+
+  string = eval(string);
+
+  if (String(string).includes(".")) {
+    string = string.toFixed(2);
+  }
+
+  // updating value to input screen
+  input.value = string;
+});
