@@ -63,12 +63,18 @@ calBtn.addEventListener("click", () => {
   checkingNum(string);
   string = changeExpression(string);
 
-  string = eval(string);
+  try {
+    string = eval(string);
 
-  if (String(string).includes(".")) {
-    string = string.toFixed(2);
+    if (String(string).includes(".")) {
+      string = string.toFixed(2);
+    }
+
+    // updating value to input screen
+    input.value = string;
+  } catch (error) {
+    alert("Invalid expression. Please check your input and try again.");
+    string = "";
+    input.value = string;
   }
-
-  // updating value to input screen
-  input.value = string;
 });
